@@ -72,7 +72,7 @@ const IndexPage = ({users}: {users: Users}) => (
   </div>
 )
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const { data } = await client.query({
     query: gql`
       query {
@@ -83,13 +83,13 @@ export async function getStaticProps() {
         }
       }
     `,
-  });
+  })
 
   return {
     props: {
       users: data.getUsers,
     },
- };
+  }
 }
 
 export default IndexPage

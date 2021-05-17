@@ -1,21 +1,28 @@
 import { ApolloServer, gql } from 'apollo-server-micro'
 import { PrismaClient } from '@prisma/client'
 import axios from 'axios'
+import Cors from 'micro-cors'
+import DataLoader from 'dataloader'
 import { User } from '../../interfaces'
 
 const prisma = new PrismaClient()
 
 const typeDefs = gql`
-  type User {
-    id: ID!
-    login: String
-    avatar_url: String
-  }
-
   type Query {
     getAlbums(first: Int = 25, skip: Int = 0): [Album]
     getUsers: [User]
     getUser(name: String!): User!
+  }
+
+  type Mutation {
+    createArtist(name: String!, url: String!): Artist!
+    createAlbum(name: String!, year: String!, artistId: string): Album!
+  }
+
+  type User {
+    id: ID!
+    login: String
+    avatar_url: String
   }
 
   type Artist {
@@ -70,14 +77,70 @@ const resolvers = {
         throw error
       }
     },
+    Album: {
+      id: (album: any) => album.id,
+      artist: (album: any, _: void, { loader }: any) => {
+        return loader.artist.load(album.artist_id)
+      },
+    },
+
+    Artist: {
+      id: (artist: any) => artist.id,
+      albums: (artist: any, args: any) => {
+        return prisma.album.findMany({
+          where: {
+            artistId: artist.id,
+          },
+          skip: args.skip,
+          take: Math.min(args.first, 50),
+          orderBy: {
+            year: 'asc',
+          },
+        })
+      },
+    },
+  },
+  Mutation: {
+    createAlbum: (_: void, args: any) => {
+      return prisma.album.create({
+        data: {
+          name: args.name,
+          year: args.year,
+          artist: {
+            connect: { id: args.artistId },
+          },
+        },
+      })
+    },
+    createArtist: (_: void, args: any) => {
+      return prisma.artist.create({
+        data: { name: args.name, url: args.url },
+      })
+    },
   },
 }
+
+const loader = {
+  artist: new DataLoader(async (ids) => {
+    const artists = await prisma.artist.findMany({
+      where: {
+        id: { in: ids as string[] },
+      },
+    })
+    return ids.map((id) => artists.find((artist) => artist.id === id))
+  }),
+}
+
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
   context: () => {
-    return {}
+    return { loader }
   },
+})
+
+const cors = Cors({
+  allowMethods: ['GET', 'POST', 'OPTIONS'],
 })
 
 const handler = apolloServer.createHandler({ path: '/api/graphql' })
@@ -88,4 +151,4 @@ export const config = {
   },
 }
 
-export default handler
+export default cors(handler)
