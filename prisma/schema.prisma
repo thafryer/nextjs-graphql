@@ -1,0 +1,26 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Album {
+	id        String @id @default(uuid())
+  name      String
+  year       String
+  artistId  String @unique
+  artist    Artist @relation(fields: [artistId], references: [id])
+}
+
+model Artist {
+  id     String @id @default(uuid())
+  name   String
+  url    String
+  albums Album[]
+}
