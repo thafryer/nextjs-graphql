@@ -1,6 +1,14 @@
-# TypeScript Next.js example
+# thaFryer's GraphQL Playground
 
-This is a really simple project that shows the usage of Next.js with TypeScript.
+This is a really simple project that I use to play around with GraphQL.
+
+## Tech Stack
+
+- Framework: NextJS (React)
+- Styling: TailwindCSS
+- Database: Supabase (Postgresql)
+- DB ORM: Prisma
+- GraphQL Server and Client: Apollo
 
 ## Deploy your own
 
