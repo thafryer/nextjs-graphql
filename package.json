@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "next",
-    "build": "next build",
+    "build": "npx prisma migrate deploy && next build",
     "start": "next start",
     "prisma:deploy": "npx prisma migrate deploy",
-    "vercel-build": "prisma migrate deploy && next build",
     "prisma:generate": "prisma generate",
     "postinstall": "prisma generate"
   },
