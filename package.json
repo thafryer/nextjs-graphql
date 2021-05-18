@@ -4,7 +4,11 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "prisma:deploy": "npx prisma migrate deploy",
+    "vercel-build": "prisma migrate deploy && next build",
+    "prisma:generate": "prisma generate",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@apollo/client": "^3.3.18",
