@@ -77,28 +77,6 @@ const resolvers = {
         throw error
       }
     },
-    Album: {
-      id: (album: any) => album.id,
-      artist: (album: any, _: void, { loader }: any) => {
-        return loader.artist.load(album.artist_id)
-      },
-    },
-
-    Artist: {
-      id: (artist: any) => artist.id,
-      albums: (artist: any, args: any) => {
-        return prisma.album.findMany({
-          where: {
-            artistId: artist.id,
-          },
-          skip: args.skip,
-          take: Math.min(args.first, 50),
-          orderBy: {
-            year: 'asc',
-          },
-        })
-      },
-    },
   },
   Mutation: {
     createAlbum: (_: void, args: any) => {
@@ -115,6 +93,28 @@ const resolvers = {
     createArtist: (_: void, args: any) => {
       return prisma.artist.create({
         data: { name: args.name, url: args.url },
+      })
+    },
+  },
+  Album: {
+    id: (album: any) => album.id,
+    artist: (album: any, _: void, { loader }: any) => {
+      return loader.artist.load(album.artist_id)
+    },
+  },
+
+  Artist: {
+    id: (artist: any) => artist.id,
+    albums: (artist: any, args: any) => {
+      return prisma.album.findMany({
+        where: {
+          artistId: artist.id,
+        },
+        skip: args.skip,
+        take: Math.min(args.first, 50),
+        orderBy: {
+          year: 'asc',
+        },
       })
     },
   },
