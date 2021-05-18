@@ -16,7 +16,7 @@ const typeDefs = gql`
 
   type Mutation {
     createArtist(name: String!, url: String!): Artist!
-    createAlbum(name: String!, year: String!, artistId: string): Album!
+    createAlbum(name: String!, year: String!, artistId: String): Album!
   }
 
   type User {

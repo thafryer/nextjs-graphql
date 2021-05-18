@@ -9,6 +9,15 @@ This is a really simple project that I use to play around with GraphQL.
 - Database: Supabase (Postgresql)
 - DB ORM: Prisma
 - GraphQL Server and Client: Apollo
+- Hosting: Vercel
+
+## TODO
+
+- Update README
+- Add Schema Validation
+- Connect Mutations to Front-End
+- Read Schema from a Separate File
+- Add Subscriptions
 
 ## Deploy your own
 
