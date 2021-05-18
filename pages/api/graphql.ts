@@ -134,6 +134,7 @@ const loader = {
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
+  playground: true,
   context: () => {
     return { loader }
   },
